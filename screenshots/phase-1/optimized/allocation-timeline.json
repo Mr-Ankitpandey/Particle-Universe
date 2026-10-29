@@ -1,0 +1,442 @@
+{
+  "durationSeconds": 5,
+  "heapStatsUpdates": 18,
+  "method": "Chrome DevTools Protocol HeapProfiler allocation tracking",
+  "applicationAllocations": [
+    {
+      "path": "(root) > ",
+      "count": 2971,
+      "bytes": 36264
+    },
+    {
+      "path": "(root) >  > advance",
+      "count": 1656,
+      "bytes": 19872
+    },
+    {
+      "path": "(root) >  > advance > ",
+      "count": 3,
+      "bytes": 84
+    },
+    {
+      "path": "(root) >  > ",
+      "count": 40,
+      "bytes": 1496
+    },
+    {
+      "path": "(root) >  >  > render",
+      "count": 156735,
+      "bytes": 1880820
+    },
+    {
+      "path": "(root) >  >  > render > render",
+      "count": 158784,
+      "bytes": 1905408
+    },
+    {
+      "path": "(root) >  >  > render > render > add",
+      "count": 35,
+      "bytes": 36448
+    },
+    {
+      "path": "(root) >  > render",
+      "count": 10320,
+      "bytes": 123840
+    },
+    {
+      "path": "(root) > ",
+      "count": 76,
+      "bytes": 1304
+    },
+    {
+      "path": "(root) >  > getStats",
+      "count": 228,
+      "bytes": 10208
+    },
+    {
+      "path": "(root) >  > Ys > pe",
+      "count": 12,
+      "bytes": 540
+    },
+    {
+      "path": "(root) >  > Ys > pe > yt",
+      "count": 1,
+      "bytes": 76
+    },
+    {
+      "path": "(root) >  > Ys > pe > yt > me",
+      "count": 1,
+      "bytes": 68
+    },
+    {
+      "path": "(root) >  > Ys > pe > yt > lu > id",
+      "count": 30,
+      "bytes": 560
+    },
+    {
+      "path": "(root) >  > Ys > pe > Si",
+      "count": 1,
+      "bytes": 44
+    },
+    {
+      "path": "(root) >  > Ys > pe > xs",
+      "count": 1,
+      "bytes": 60
+    },
+    {
+      "path": "(root) > ",
+      "count": 1,
+      "bytes": 108
+    },
+    {
+      "path": "(root) >  > Iv > A.unstable_now",
+      "count": 15,
+      "bytes": 180
+    },
+    {
+      "path": "(root) >  > Iv > kv",
+      "count": 10,
+      "bytes": 120
+    },
+    {
+      "path": "(root) >  > Iv > kv > _m",
+      "count": 8,
+      "bytes": 112
+    },
+    {
+      "path": "(root) >  > Iv > kv > A.unstable_scheduleCallback",
+      "count": 190,
+      "bytes": 8208
+    },
+    {
+      "path": "(root) >  > Iv > kv > A.unstable_scheduleCallback > A.unstable_now",
+      "count": 8,
+      "bytes": 96
+    },
+    {
+      "path": "(root) >  > Iv > kv > A.unstable_scheduleCallback > S",
+      "count": 1,
+      "bytes": 16
+    },
+    {
+      "path": "(root) >  > Iv > kv > A.unstable_scheduleCallback > pl",
+      "count": 2,
+      "bytes": 24
+    },
+    {
+      "path": "(root) > Ll",
+      "count": 17,
+      "bytes": 240
+    },
+    {
+      "path": "(root) > Ll > A.unstable_now",
+      "count": 16,
+      "bytes": 192
+    },
+    {
+      "path": "(root) > Ll > Zl",
+      "count": 9,
+      "bytes": 108
+    },
+    {
+      "path": "(root) > Ll > Zl > A.unstable_now",
+      "count": 9,
+      "bytes": 108
+    },
+    {
+      "path": "(root) > Ll > Pv",
+      "count": 1,
+      "bytes": 124
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv",
+      "count": 1,
+      "bytes": 372
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc",
+      "count": 1,
+      "bytes": 152
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > Vv",
+      "count": 1,
+      "bytes": 44
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > Zv",
+      "count": 1,
+      "bytes": 44
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > Pa",
+      "count": 1,
+      "bytes": 124
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > Pa > Bc",
+      "count": 1,
+      "bytes": 76
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > Pa > q0",
+      "count": 1,
+      "bytes": 68
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > Vh > cn",
+      "count": 14,
+      "bytes": 392
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > Vh > cn > cy",
+      "count": 1,
+      "bytes": 28
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > Vh > Mu",
+      "count": 1,
+      "bytes": 52
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > Vh > ua",
+      "count": 1,
+      "bytes": 28
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > Gr",
+      "count": 336,
+      "bytes": 8332
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > Gr > Z.useState > useState > Fn > Ul",
+      "count": 10,
+      "bytes": 400
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > Gr > Z.useState > useState > Fn > Ki",
+      "count": 20,
+      "bytes": 400
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > Gr > Z.useEffect > Wi > $n > Ul",
+      "count": 5,
+      "bytes": 200
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > Gr > Z.useEffect > Wi > $n > Va",
+      "count": 5,
+      "bytes": 200
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > Gr > Z.useEffect > Wi > $n > Va > Jn",
+      "count": 5,
+      "bytes": 180
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > Gr > E",
+      "count": 117,
+      "bytes": 4656
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > pr",
+      "count": 63,
+      "bytes": 1524
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > pr > Z.useRef > Ts > Ul",
+      "count": 10,
+      "bytes": 400
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > pr > Z.useEffect > Wi > $n > Ul",
+      "count": 5,
+      "bytes": 200
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > pr > Z.useEffect > Wi > $n > Va",
+      "count": 5,
+      "bytes": 200
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > pr > Z.useEffect > Wi > $n > Va > Jn",
+      "count": 5,
+      "bytes": 180
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > Xi > pr > E",
+      "count": 15,
+      "bytes": 600
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > nc > xl >  > K > N",
+      "count": 10,
+      "bytes": 260
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > fv > xl >  > K > N",
+      "count": 60,
+      "bytes": 1200
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > bf > Zh > yu",
+      "count": 1,
+      "bytes": 52
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > Lv > bf > Zh > Ea",
+      "count": 1,
+      "bytes": 52
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > Vh > cn",
+      "count": 10,
+      "bytes": 200
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > Gr",
+      "count": 255,
+      "bytes": 6120
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > Gr > Z.useState > useState > Fn > Ul",
+      "count": 10,
+      "bytes": 400
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > Gr > Z.useState > useState > Fn > Ki",
+      "count": 20,
+      "bytes": 400
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > Gr > Z.useEffect > Wi > $n > Ul",
+      "count": 5,
+      "bytes": 200
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > Gr > Z.useEffect > Wi > $n > Va",
+      "count": 5,
+      "bytes": 200
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > Gr > Z.useEffect > Wi > $n > Va > Jn",
+      "count": 5,
+      "bytes": 180
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > Gr > E",
+      "count": 115,
+      "bytes": 4600
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > pr",
+      "count": 50,
+      "bytes": 1180
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > pr > Z.useRef > Ts > Ul",
+      "count": 10,
+      "bytes": 400
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > pr > Z.useEffect > Wi > $n > Ul",
+      "count": 5,
+      "bytes": 200
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > pr > Z.useEffect > Wi > $n > Va",
+      "count": 5,
+      "bytes": 200
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > pr > Z.useEffect > Wi > $n > Va > Jn",
+      "count": 5,
+      "bytes": 180
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > Xi > pr > E",
+      "count": 15,
+      "bytes": 600
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > nc > xl >  > K > N",
+      "count": 10,
+      "bytes": 260
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > xc > $h > fv > xl >  > K > N",
+      "count": 60,
+      "bytes": 1200
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv",
+      "count": 1,
+      "bytes": 232
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv > wv",
+      "count": 1,
+      "bytes": 108
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv > wv > Ph",
+      "count": 1,
+      "bytes": 180
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv > wv > Ph > Kh",
+      "count": 17,
+      "bytes": 560
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv > wv > Ph > Kh > yi",
+      "count": 29,
+      "bytes": 1148
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv > wv > Ph > pc > Mv > et > Mv > et > Mv > et > Mv > et > Mv > et > Mv > gc > rd",
+      "count": 20,
+      "bytes": 320
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv > wv > Ph > pc > Mv > et > Mv > et > Mv > et > Mv > et > Mv > et > Mv > et > Mv > gc > rd",
+      "count": 10,
+      "bytes": 160
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv > wv > Ph > pc > Mv > et > Mv > et > Mv > et > Mv > et > Mv > gc > rd",
+      "count": 30,
+      "bytes": 480
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv > wv > Ph > pc > Mv > Ie",
+      "count": 3,
+      "bytes": 96
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv > wv > Ph > jc > A.unstable_requestPaint",
+      "count": 1,
+      "bytes": 28
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv > wv > Ph > jc > Fv",
+      "count": 1,
+      "bytes": 68
+    },
+    {
+      "path": "(root) > Ll > Pv > Gv > jv > wv > Ph > jc > lu > id",
+      "count": 30,
+      "bytes": 560
+    },
+    {
+      "path": "(root) > Ll > Pv > A.unstable_now",
+      "count": 8,
+      "bytes": 96
+    },
+    {
+      "path": "(root) > Ll > o",
+      "count": 1,
+      "bytes": 16
+    }
+  ]
+}

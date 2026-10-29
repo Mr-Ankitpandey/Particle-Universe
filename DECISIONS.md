@@ -10,3 +10,6 @@
 - Revert experimental path batching: it improves submission overhead but changes additive overlap and still misses the target.
 - Keep transparent particle-layer decay so the independently rendered starfield remains visible; the exact background-color fade implementation remains a specification difference to resolve.
 - Use installed Edge for accelerated diagnostics; keep portable Playwright Chromium as the default and allow PLAYWRIGHT_CHANNEL overrides.
+
+- Following the user's low-end priority, replace individual tiny-star Canvas draws with bilinear additive CPU rasterization and dirty-row uploads. This changes the prescribed implementation technique while retaining Canvas 2D, full resolution and all particles; measurements improved from 20 FPS to ~59 FPS on the actual i3 laptop.
+- Use hardware-accelerated Edge as the working browser for local validation; keep Chrome-specific release verification outstanding.

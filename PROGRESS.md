@@ -49,3 +49,18 @@ No later phase is claimed complete. Git checkpoints preserve reviewable work wit
 
 Final retained-renderer measurement: 49.86 ms average over 180 frames (20.06 FPS), at 1440×900 in hardware-accelerated Edge. Clean pnpm frozen-lockfile installation also succeeded with esbuild explicitly allowed.
 
+
+## Low-end optimization update
+
+User direction: prioritize tools that work well on low-end laptops without reducing result quality, then proceed. Replaced per-star Canvas submissions with a reusable full-resolution bilinear additive raster, dirty-row uploads, and cached sprites for bright stars. All 20,000 particles remain active; no resolution reduction.
+
+Final measured machine: Intel Core i3-10110U, Intel UHD Graphics, hardware-accelerated Edge (working Chromium-based browser on this host).
+- 1440×900: 16.97 ms average / 58.94 FPS (180 frames).
+- 1280×720 at DPR 2 and 4× CPU throttle: 31.49 ms / 31.76 FPS (90 frames).
+- Initial JS: 73.67 KB gzip.
+- Typecheck, lint, 6 unit tests, build and 2 Playwright tests pass.
+- Desktop, mobile and HiDPI screenshots reviewed. HiDPI output is 2560×1440 pixels.
+- Physics now uses softened enclosed-mass orbital acceleration, tangential velocities after ignition, and drag compensation; 30-second bounded-orbit test passes.
+- Background/starfield/particle layers are separate modules; DPR monitoring and window-resize listeners are disposed correctly.
+
+Allocation tracking was performed through the DevTools HeapProfiler protocol for five seconds, with 18 heap-stat updates. The report is in `optimized/allocation-timeline.json`. It DOES report runtime allocations under renderer/accumulator call stacks (predominantly 12-byte entries); therefore literal zero allocations is not claimed. Source hot loops reuse buffers and contain no explicit object/array creation. Further runtime-allocation tuning and Chrome-specific verification remain open; these do not invalidate the measured low-end results. Later phase implementation proceeds per the user's latest direction, with these limitations carried forward rather than erased.

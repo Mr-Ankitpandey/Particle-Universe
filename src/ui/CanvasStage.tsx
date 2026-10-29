@@ -9,10 +9,16 @@ export function CanvasStage({ onStats }: { onStats: (text: string) => void }) {
     const resize = () =>
       engine.resize(innerWidth, innerHeight, devicePixelRatio);
     resize();
+    addEventListener("resize", resize);
+    let lastDpr = devicePixelRatio;
     const observer = new ResizeObserver(resize);
     observer.observe(canvas.current);
     engine.start();
     const timer = setInterval(() => {
+      if (lastDpr !== devicePixelRatio) {
+        lastDpr = devicePixelRatio;
+        resize();
+      }
       const s = engine.getStats();
       onStats(
         s.fps.toFixed(0) +
@@ -23,6 +29,7 @@ export function CanvasStage({ onStats }: { onStats: (text: string) => void }) {
     }, 500);
     return () => {
       clearInterval(timer);
+      removeEventListener("resize", resize);
       observer.disconnect();
       engine.dispose();
     };

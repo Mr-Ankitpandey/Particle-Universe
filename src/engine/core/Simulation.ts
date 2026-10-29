@@ -1,3 +1,4 @@
+import { angularSpeed, IGNITION_SECONDS } from "./constants";
 import { ParticleBuffer } from "./ParticleBuffer";
 import { OrbitalForce } from "../forces/OrbitalForce";
 import { Drag } from "../forces/Drag";
@@ -8,8 +9,18 @@ export class Simulation {
   constructor(readonly buffer: ParticleBuffer) {}
   step(dt: number) {
     const b = this.buffer;
+    const previous = this.time;
     this.time += dt;
-    this.orbit.apply(b, dt);
+    if (previous < IGNITION_SECONDS && this.time >= IGNITION_SECONDS) {
+      for (let i = 0; i < b.count; i++) {
+        const x = b.x[i] ?? 0,
+          y = b.y[i] ?? 0,
+          speed = angularSpeed(x * x + y * y);
+        b.vx[i] = -y * speed;
+        b.vy[i] = x * speed;
+      }
+    }
+    this.orbit.apply(b, dt, this);
     for (let i = 0; i < b.count; i++) {
       b.px[i] = b.x[i] ?? 0;
       b.py[i] = b.y[i] ?? 0;
