@@ -1,6 +1,11 @@
+import type {
+  EntityManager,
+  EntityKind,
+} from "../engine/entities/EntityManager";
 import { Camera } from "../engine/core/Camera";
 import type { PointerSource, ToolId } from "./tools";
 export interface InteractionActions {
+  shouldThaw(x: number, y: number, radius: number): boolean;
   shockwave(x: number, y: number): void;
   supernova(x: number, y: number, charge: number): void;
 }
@@ -15,10 +20,14 @@ export class InputController {
     private canvas: HTMLCanvasElement,
     private camera: Camera,
     private actions: InteractionActions,
+    private entities: EntityManager,
   ) {
     for (let i = 0; i < 10; i++)
       this.sources.push({
         id: -1,
+        entityId: -1,
+        unfreeze: false,
+        longPress: 0,
         active: false,
         x: 0,
         y: 0,
@@ -38,13 +47,21 @@ export class InputController {
     canvas.addEventListener("wheel", this.wheel, { passive: false });
     canvas.addEventListener("contextmenu", this.context);
   }
-  private context = (event: Event) => event.preventDefault();
+  private scratch = { x: 0, y: 0 };
+  private context = (event: MouseEvent) => {
+    event.preventDefault();
+    this.camera.screenToWorld(event.clientX, event.clientY, this.scratch);
+    const hit = this.entities.hit(this.scratch.x, this.scratch.y);
+    if (hit) this.entities.remove(hit.id);
+  };
   private down = (event: PointerEvent) => {
     if (event.button !== 0 && event.button !== 1) return;
     const source = this.sources.find((p) => !p.active);
     if (!source) return;
     this.canvas.setPointerCapture(event.pointerId);
     source.id = event.pointerId;
+    source.entityId = -1;
+    source.unfreeze = event.shiftKey;
     source.active = true;
     source.tool = event.button === 1 ? "pan" : this.tool;
     source.radius = this.radius;
@@ -55,6 +72,34 @@ export class InputController {
     source.vx = 0;
     source.vy = 0;
     this.camera.screenToWorld(event.clientX, event.clientY, source);
+    if (source.tool === "freeze")
+      source.unfreeze =
+        event.shiftKey ||
+        this.actions.shouldThaw(source.x, source.y, source.radius);
+    const hit = this.entities.hit(
+      source.x,
+      source.y,
+      Math.max(0.09, 22 / this.camera.scale),
+    );
+    if (hit) {
+      source.entityId = hit.id;
+      source.tool = "pan";
+      source.longPress = window.setTimeout(() => {
+        this.entities.remove(hit.id);
+        source.active = false;
+      }, 650);
+    } else if (
+      source.tool === "gravityWell" ||
+      source.tool === "blackHole" ||
+      source.tool === "vortex"
+    ) {
+      source.entityId = this.entities.add(
+        source.tool as EntityKind,
+        source.x,
+        source.y,
+      );
+      source.tool = "pan";
+    }
     if (source.tool === "shockwave") this.actions.shockwave(source.x, source.y);
     this.updatePinch(false);
   };
@@ -72,6 +117,17 @@ export class InputController {
     source.screenX = event.clientX;
     source.screenY = event.clientY;
     source.time = now;
+    if (Math.abs(dx) + Math.abs(dy) > 2) clearTimeout(source.longPress);
+    if (source.entityId >= 0) {
+      this.camera.screenToWorld(event.clientX, event.clientY, source);
+      const entity = this.entities.find(source.entityId);
+      if (entity) {
+        entity.x = source.x;
+        entity.y = source.y;
+      }
+      this.updatePinch(true);
+      return;
+    }
     if (source.tool === "pan") {
       this.camera.panX += dx;
       this.camera.panY += dy;
@@ -102,7 +158,9 @@ export class InputController {
       cx = (first.screenX + second.screenX) / 2,
       cy = (first.screenY + second.screenY) / 2;
     if (apply && this.pinchDistance > 0) {
-      this.camera.zoomAt(distance / this.pinchDistance, cx, cy);
+      if (first.entityId >= 0 && first.entityId === second.entityId) {
+        this.entities.resize(first.entityId, distance / this.pinchDistance);
+      } else this.camera.zoomAt(distance / this.pinchDistance, cx, cy);
       this.camera.panX += cx - this.pinchX;
       this.camera.panY += cy - this.pinchY;
       for (const source of this.sources)
@@ -124,16 +182,26 @@ export class InputController {
         source.y,
         (performance.now() - source.started) / 1000,
       );
+    clearTimeout(source.longPress);
     source.active = false;
     this.updatePinch(false);
   };
   private cancel = (event: PointerEvent) => {
     const source = this.sources.find((p) => p.id === event.pointerId);
-    if (source) source.active = false;
+    if (source) {
+      clearTimeout(source.longPress);
+      source.active = false;
+    }
     this.updatePinch(false);
   };
   private wheel = (event: WheelEvent) => {
     event.preventDefault();
+    this.camera.screenToWorld(event.clientX, event.clientY, this.scratch);
+    const hit = this.entities.hit(this.scratch.x, this.scratch.y);
+    if (hit) {
+      this.entities.resize(hit.id, Math.exp(-event.deltaY * 0.001));
+      return;
+    }
     this.camera.zoomAt(
       Math.exp(-event.deltaY * 0.001),
       event.clientX,
@@ -141,6 +209,7 @@ export class InputController {
     );
   };
   dispose() {
+    for (const source of this.sources) clearTimeout(source.longPress);
     this.canvas.removeEventListener("pointerdown", this.down);
     this.canvas.removeEventListener("pointermove", this.move);
     this.canvas.removeEventListener("pointerup", this.up);

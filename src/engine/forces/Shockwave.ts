@@ -34,6 +34,7 @@ export class Shockwave implements Force {
         cy = this.y[wave] ?? 0,
         strength = (this.strength[wave] ?? 1) * 0.12;
       for (let i = 0; i < b.count; i++) {
+        if ((b.flags[i] ?? 0) & 1) continue;
         const dx = (x[i] ?? 0) - cx,
           dy = (y[i] ?? 0) - cy,
           d = Math.hypot(dx, dy);

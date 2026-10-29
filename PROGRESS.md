@@ -76,3 +76,15 @@ Implemented six tools (Attract, Repel, Swirl, Shockwave, charged Supernova, Pan)
 - Two simultaneous touch points were dispatched through Chromium's touch API, moved apart, then released without page errors.
 - Latest steady-state measurement during the full suite: 17.37 ms (~57.56 FPS) with 20k particles; performance varies with host load. Initial JS: 76.85 KB gzip.
 - Prior Phase 1 runtime-allocation and browser-specific verification caveats remain tracked; not presented as resolved.
+
+## Phase 3 — cosmic objects and fields
+
+Implemented gravity wells, absorbing/respawning black holes with capped growth and evaporation, vortices, draggable/resizable objects, desktop context deletion and mobile long-press deletion. Freeze supports Shift or a second tap to thaw, plus global thaw with Space. Added seeded curl-noise turbulence/flow with a cached 48×48 vector grid, streaks, an independently rendered nebula layer, and quarter-resolution bloom. The glow layer is separate from trails to prevent accumulating feedback/banding; slow layers are cached.
+
+- Typecheck, lint, 12 unit tests and production build pass. Initial JavaScript: 81.12 KB gzip.
+- Full 5-test browser suite passed before final layer caching; affected entity, foundation and low-end tests passed after the final renderer changes (4 tests).
+- Black-hole conservation, entity limits/resize clamps, freeze/thaw: unit-tested.
+- Placement, dragging, scrolling, right-click deletion, 12-object toast, mobile touch drag/long-press deletion: browser-tested.
+- Reviewed black-hole, flow, bloom on/off, and mobile screenshots in `screenshots/phase-3/`.
+- Latest host-loaded performance sample: 39.23 ms at 20k; DPR 2 with 4× CPU throttling: 75.08 ms. Earlier same-stage sample before the final run was ~20.25 ms. These are diagnostics, not a claim that the final performance budget passes. Host build/unit-test timings also slowed substantially in the last run. Phase 4 includes the specified governor; performance remains a release gate.
+- Runtime allocation / exact Chrome browser caveats from Phase 1 remain open.

@@ -16,8 +16,8 @@ test("full-resolution stars under low-end CPU load and HiDPI", async ({
     height: (canvas as HTMLCanvasElement).height,
   }));
   expect(dimensions).toEqual({ width: 2560, height: 1440 });
-  mkdirSync("screenshots/phase-1/optimized", { recursive: true });
-  await page.screenshot({ path: "screenshots/phase-1/optimized/hidpi.png" });
+  mkdirSync("screenshots/phase-3/optimized", { recursive: true });
+  await page.screenshot({ path: "screenshots/phase-3/optimized/hidpi.png" });
   const session = await context.newCDPSession(page);
   await session.send("Emulation.setCPUThrottlingRate", { rate: 4 });
   const timing = await page.evaluate(async () => {
@@ -40,7 +40,7 @@ test("full-resolution stars under low-end CPU load and HiDPI", async ({
   await page.keyboard.press("f");
   await expect(page.locator("output")).toContainText("20,000");
   writeFileSync(
-    "screenshots/phase-1/optimized/throttled.json",
+    "screenshots/phase-3/optimized/throttled.json",
     JSON.stringify(
       { cpuThrottle: 4, dpr: 2, width: 1280, height: 720, ...timing },
       null,

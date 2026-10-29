@@ -66,7 +66,11 @@ export class ParticleLayer {
       const fx = sx - ix,
         fy = sy - iy,
         index = (iy * w + ix) * 4;
-      const color = Math.min(23, Math.floor((hues[i] ?? 0) / 15)) * 3;
+      const color =
+        Math.min(
+          23,
+          Math.floor(((b.flags[i] ?? 0) & 1 ? 210 : (hues[i] ?? 0)) / 15),
+        ) * 3;
       const brightness = 0.36 * size * size * dpr * dpr;
       const r = (colors[color] ?? 0) * brightness,
         g = (colors[color + 1] ?? 0) * brightness,

@@ -1,3 +1,10 @@
+import type { EntityManager } from "../entities/EntityManager";
+import { GravityWell } from "../forces/GravityWell";
+import { BlackHole } from "../forces/BlackHole";
+import { Vortex } from "../forces/Vortex";
+import { FreezeField } from "../forces/FreezeField";
+import { FlowField } from "../forces/FlowField";
+import { Turbulence } from "../forces/Turbulence";
 import { Shockwave } from "../forces/Shockwave";
 import { Supernova } from "../forces/Supernova";
 import { PointerForce } from "../forces/PointerForce";
@@ -12,12 +19,25 @@ export class Simulation {
   readonly waves = new Shockwave();
   readonly supernova = new Supernova(this.waves);
   readonly pointers: PointerForce;
+  readonly freeze: FreezeField;
+  readonly flow = new FlowField();
+  readonly turbulence = new Turbulence();
+  private wells?: GravityWell;
+  private holes?: BlackHole;
+  private vortices?: Vortex;
   time = 0;
   constructor(
     readonly buffer: ParticleBuffer,
     sources: PointerSource[] = [],
+    entities?: EntityManager,
   ) {
     this.pointers = new PointerForce(sources);
+    this.freeze = new FreezeField(sources);
+    if (entities) {
+      this.wells = new GravityWell(entities);
+      this.holes = new BlackHole(entities);
+      this.vortices = new Vortex(entities);
+    }
   }
   step(dt: number) {
     const b = this.buffer;
@@ -32,10 +52,17 @@ export class Simulation {
         b.vy[i] = x * speed;
       }
     }
+    this.freeze.apply(b);
     this.orbit.apply(b, dt, this);
+    this.wells?.apply(b, dt);
+    this.holes?.apply(b, dt);
+    this.vortices?.apply(b, dt);
+    this.flow.apply(b, dt, this);
+    this.turbulence.apply(b, dt, this);
     this.pointers.apply(b, dt);
     this.waves.apply(b, dt);
     for (let i = 0; i < b.count; i++) {
+      if ((b.flags[i] ?? 0) & 1) continue;
       b.px[i] = b.x[i] ?? 0;
       b.py[i] = b.y[i] ?? 0;
       b.x[i] = (b.x[i] ?? 0) + (b.vx[i] ?? 0) * dt;

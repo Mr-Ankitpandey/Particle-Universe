@@ -253,3 +253,97 @@ header button {
     font-size: 22px;
   }
 }
+.field-panel {
+  position: absolute;
+  z-index: 4;
+  right: 4%;
+  top: 110px;
+  width: 280px;
+  padding: 22px;
+  background: rgba(14, 12, 30, 0.92);
+  backdrop-filter: blur(18px);
+  border: 1px solid #ffffff18;
+  border-radius: 18px;
+}
+.field-panel h2 {
+  font:
+    20px "Space Grotesk",
+    sans-serif;
+  margin: 0;
+}
+.field-panel label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+.field-panel input {
+  accent-color: #a78bfa;
+}
+.field-panel input[type="range"] {
+  width: 145px;
+}
+.toast {
+  position: absolute;
+  z-index: 10;
+  bottom: 165px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid #a78bfa50;
+  background: #17112beb;
+  border-radius: 12px;
+  padding: 14px 20px;
+  max-width: 90%;
+  font-size: 12px;
+}
+.tool-dock button {
+  min-width: 62px;
+}
+.tool-dock {
+  max-width: 95vw;
+}
+.tool-dock button span:not(.tool-icon) {
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .tool-dock {
+    width: calc(100% - 16px);
+    flex-wrap: wrap;
+    justify-content: center;
+    bottom: 48px;
+    gap: 2px;
+  }
+  .tool-dock button {
+    min-width: 54px;
+    width: 18%;
+    min-height: 56px;
+  }
+  .field-panel {
+    top: 90px;
+    right: 12px;
+    max-height: calc(100dvh - 270px);
+    overflow: auto;
+  }
+  .toast {
+    bottom: 185px;
+  }
+  header {
+    gap: 6px;
+  }
+  header button {
+    padding: 10px;
+  }
+  .brand {
+    gap: 5px;
+  }
+  .brand span {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+}
+.stage .bloom {
+  pointer-events: none;
+  mix-blend-mode: plus-lighter;
+}

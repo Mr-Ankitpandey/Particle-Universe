@@ -17,10 +17,12 @@ export class PointerForce implements Force {
       if (
         !source?.active ||
         source.tool === "pan" ||
-        source.tool === "shockwave"
+        source.tool === "shockwave" ||
+        source.tool === "freeze"
       )
         continue;
       for (let i = 0; i < b.count; i++) {
+        if ((b.flags[i] ?? 0) & 1) continue;
         const dx = source.x - (x[i] ?? 0),
           dy = source.y - (y[i] ?? 0),
           d2 = dx * dx + dy * dy;

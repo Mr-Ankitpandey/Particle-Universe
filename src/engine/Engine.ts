@@ -1,3 +1,4 @@
+import { EntityManager } from "./entities/EntityManager";
 import { ParticleBuffer } from "./core/ParticleBuffer";
 import { Simulation } from "./core/Simulation";
 import { Loop } from "./core/Loop";
@@ -11,6 +12,7 @@ export class Engine {
   readonly buffer = new ParticleBuffer(20000);
   readonly camera = new Camera();
   readonly input: InputController;
+  readonly entities: EntityManager;
   private simulation: Simulation;
   private renderer: Renderer;
   private loop: Loop;
@@ -20,21 +22,47 @@ export class Engine {
     canvas: HTMLCanvasElement,
     background: HTMLCanvasElement,
     private overlay: HTMLCanvasElement,
+    nebula: HTMLCanvasElement,
+    bloom: HTMLCanvasElement,
+    notify: (message: string) => void = () => {},
   ) {
+    this.entities = new EntityManager(notify);
     galaxy(this.buffer, 4217);
-    this.renderer = new Renderer(canvas, background);
-    this.input = new InputController(canvas, this.camera, {
-      shockwave: (x, y) => this.simulation.waves.spawn(x, y),
-      supernova: (x, y, charge) =>
-        this.simulation.supernova.explode(
-          this.buffer,
-          x,
-          y,
-          charge,
-          this.simulation.time,
-        ),
-    });
-    this.simulation = new Simulation(this.buffer, this.input.sources);
+    this.renderer = new Renderer(canvas, background, nebula, bloom);
+    this.input = new InputController(
+      canvas,
+      this.camera,
+      {
+        shouldThaw: (x, y, radius) => {
+          for (let i = 0; i < this.buffer.count; i++) {
+            if (
+              (this.buffer.flags[i] ?? 0) & 1 &&
+              Math.hypot(
+                (this.buffer.x[i] ?? 0) - x,
+                (this.buffer.y[i] ?? 0) - y,
+              ) < radius
+            )
+              return true;
+          }
+          return false;
+        },
+        shockwave: (x, y) => this.simulation.waves.spawn(x, y),
+        supernova: (x, y, charge) =>
+          this.simulation.supernova.explode(
+            this.buffer,
+            x,
+            y,
+            charge,
+            this.simulation.time,
+          ),
+      },
+      this.entities,
+    );
+    this.simulation = new Simulation(
+      this.buffer,
+      this.input.sources,
+      this.entities,
+    );
     const context = overlay.getContext("2d");
     if (!context) throw Error("Canvas 2D unavailable");
     this.effectsContext = context;
@@ -48,6 +76,7 @@ export class Engine {
           this.simulation.waves,
           this.input.sources,
           time * 1000,
+          this.entities,
         );
       },
     );
@@ -73,10 +102,23 @@ export class Engine {
     this.input.tool = tool;
   }
   togglePause() {
-    this.loop.togglePause();
+    if (!this.simulation.freeze.thaw(this.buffer)) this.loop.togglePause();
   }
   step() {
     this.loop.stepFrame();
+  }
+  setFields(options: {
+    bloom: number;
+    nebula: boolean;
+    flow: boolean;
+    turbulence: boolean;
+    streak: boolean;
+  }) {
+    this.renderer.bloom = options.bloom;
+    this.renderer.nebula = options.nebula;
+    this.renderer.streak = options.streak;
+    this.simulation.flow.enabled = options.flow;
+    this.simulation.turbulence.enabled = options.turbulence;
   }
   getStats() {
     return {
@@ -85,6 +127,7 @@ export class Engine {
       particleCount: this.buffer.count,
       qualityTier: "high",
       paused: this.loop.isPaused,
+      entityCount: this.entities.items.length,
     };
   }
   dispose() {

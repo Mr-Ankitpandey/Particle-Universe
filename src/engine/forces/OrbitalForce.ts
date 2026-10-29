@@ -15,6 +15,7 @@ export class OrbitalForce implements Force {
       hx = b.hx,
       hy = b.hy;
     for (let i = 0; i < b.count; i++) {
+      if ((b.flags[i] ?? 0) & 1) continue;
       const px = x[i] ?? 0,
         py = y[i] ?? 0;
       if (ctx.time < IGNITION_SECONDS) {

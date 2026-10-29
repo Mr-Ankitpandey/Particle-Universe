@@ -13,3 +13,6 @@
 
 - Following the user's low-end priority, replace individual tiny-star Canvas draws with bilinear additive CPU rasterization and dirty-row uploads. This changes the prescribed implementation technique while retaining Canvas 2D, full resolution and all particles; measurements improved from 20 FPS to ~59 FPS on the actual i3 laptop.
 - Use hardware-accelerated Edge as the working browser for local validation; keep Chrome-specific release verification outstanding.
+
+- Cache a seeded curl-noise vector grid and interpolate it per particle; this avoids four simplex evaluations per particle per step.
+- Render nebula and quarter-resolution bloom on separate canvas layers to prevent trail feedback, preserve dark space, and avoid repeated full-resolution glow uploads.
