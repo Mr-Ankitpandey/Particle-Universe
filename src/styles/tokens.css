@@ -1,0 +1,9 @@
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #e8e6ff;
+  background: #03030a;
+  font-synthesis: none;
+  --muted: #aaa7c8;
+  --glass: rgba(14, 12, 30, 0.55);
+  --accent: #a78bfa;
+}
