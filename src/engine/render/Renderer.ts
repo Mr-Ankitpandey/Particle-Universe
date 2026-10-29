@@ -1,3 +1,4 @@
+import type { Camera } from "../core/Camera";
 import { ParticleBuffer } from "../core/ParticleBuffer";
 import { BackgroundLayer } from "./layers/BackgroundLayer";
 import { SpriteCache } from "./SpriteCache";
@@ -35,11 +36,11 @@ export class Renderer {
     this.bg.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     this.backgroundLayer.render(w, h);
   }
-  render(b: ParticleBuffer, time: number) {
+  render(b: ParticleBuffer, time: number, camera: Camera) {
     const c = this.ctx,
       w = this.width,
       h = this.height,
-      scale = Math.min(w, h) * 0.48;
+      scale = camera.scale;
     c.globalCompositeOperation = "destination-out";
     c.fillStyle = "rgba(0,0,0,.26)";
     c.fillRect(0, 0, w, h);
@@ -51,8 +52,8 @@ export class Renderer {
     this.particles.render(
       b,
       scale * this.dpr,
-      w * 0.5 * this.dpr,
-      h * 0.52 * this.dpr,
+      camera.centerX * this.dpr,
+      camera.centerY * this.dpr,
       this.dpr,
     );
     c.drawImage(this.particles.canvas, 0, 0, w, h);
@@ -62,14 +63,21 @@ export class Renderer {
       if (size < 1.5) continue;
       const sprite =
         this.cache.sprites[Math.min(23, Math.floor((hues[i] ?? 0) / 15)) * 4];
-      const x = w * 0.5 + (bx[i] ?? 0) * scale,
-        y = h * 0.52 + (by[i] ?? 0) * scale * 0.66,
+      const x = camera.centerX + (bx[i] ?? 0) * scale,
+        y = camera.centerY + (by[i] ?? 0) * scale * 0.66,
         r = size * 4;
       if (sprite) c.drawImage(sprite, x - r, y - r, r * 2, r * 2);
     }
     c.globalAlpha = 0.12 + 0.015 * Math.sin((time * Math.PI) / 3);
     const core = this.cache.sprites[8];
-    if (core) c.drawImage(core, w * 0.5 - 90, h * 0.52 - 65, 180, 130);
+    if (core)
+      c.drawImage(
+        core,
+        camera.centerX - 90 * camera.zoom,
+        camera.centerY - 65 * camera.zoom,
+        180 * camera.zoom,
+        130 * camera.zoom,
+      );
     c.globalAlpha = 1;
   }
 }

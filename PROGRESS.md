@@ -64,3 +64,15 @@ Final measured machine: Intel Core i3-10110U, Intel UHD Graphics, hardware-accel
 - Background/starfield/particle layers are separate modules; DPR monitoring and window-resize listeners are disposed correctly.
 
 Allocation tracking was performed through the DevTools HeapProfiler protocol for five seconds, with 18 heap-stat updates. The report is in `optimized/allocation-timeline.json`. It DOES report runtime allocations under renderer/accumulator call stacks (predominantly 12-byte entries); therefore literal zero allocations is not claimed. Source hot loops reuse buffers and contain no explicit object/array creation. Further runtime-allocation tuning and Chrome-specific verification remain open; these do not invalidate the measured low-end results. Later phase implementation proceeds per the user's latest direction, with these limitations carried forward rather than erased.
+
+## Phase 2 — interaction implementation verified
+
+Implemented six tools (Attract, Repel, Swirl, Shockwave, charged Supernova, Pan), pointer velocity transfer, independent simultaneous pointer sources, pinch/pan, cursor-anchored zoom (0.25×–4×), a responsive dock, keyboard selection, pause/step and camera reset. Supernova debris recycles the particle pool. Explosions are rate-limited and localized. Visual review led to lower force strengths and soft outer-boundary recovery so ordinary gestures do not empty the scene.
+
+- Typecheck, lint, 9 unit tests, production build: passed.
+- Full Playwright suite: 3 tests passed (foundation, interaction tools/mobile multi-touch, throttled HiDPI). After force tuning, the affected interaction test passed again.
+- Reviewed `screenshots/phase-2/tools.png` and individual tool screenshots plus `multitouch.png`.
+- Camera unit test verifies cursor world-position invariance under zoom and zoom bounds. Wave test verifies outward impulse; supernova test verifies particle conservation and burst rate limiting.
+- Two simultaneous touch points were dispatched through Chromium's touch API, moved apart, then released without page errors.
+- Latest steady-state measurement during the full suite: 17.37 ms (~57.56 FPS) with 20k particles; performance varies with host load. Initial JS: 76.85 KB gzip.
+- Prior Phase 1 runtime-allocation and browser-specific verification caveats remain tracked; not presented as resolved.

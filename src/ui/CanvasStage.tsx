@@ -1,11 +1,23 @@
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { Engine } from "../engine/Engine";
-export function CanvasStage({ onStats }: { onStats: (text: string) => void }) {
+export const CanvasStage = memo(function CanvasStage({
+  onStats,
+  onEngine,
+}: {
+  onStats: (text: string) => void;
+  onEngine: (engine: Engine | null) => void;
+}) {
   const canvas = useRef<HTMLCanvasElement>(null),
-    background = useRef<HTMLCanvasElement>(null);
+    background = useRef<HTMLCanvasElement>(null),
+    overlay = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    if (!canvas.current || !background.current) return;
-    const engine = new Engine(canvas.current, background.current);
+    if (!canvas.current || !background.current || !overlay.current) return;
+    const engine = new Engine(
+      canvas.current,
+      background.current,
+      overlay.current,
+    );
+    onEngine(engine);
     const resize = () =>
       engine.resize(innerWidth, innerHeight, devicePixelRatio);
     resize();
@@ -24,7 +36,8 @@ export function CanvasStage({ onStats }: { onStats: (text: string) => void }) {
         s.fps.toFixed(0) +
           " FPS · " +
           s.frameMs.toFixed(1) +
-          " MS · 20,000 PARTICLES · HIGH",
+          " MS · 20,000 PARTICLES · HIGH" +
+          (s.paused ? " · PAUSED" : ""),
       );
     }, 500);
     return () => {
@@ -32,16 +45,18 @@ export function CanvasStage({ onStats }: { onStats: (text: string) => void }) {
       removeEventListener("resize", resize);
       observer.disconnect();
       engine.dispose();
+      onEngine(null);
     };
-  }, [onStats]);
+  }, [onStats, onEngine]);
   return (
     <div className="stage">
       <canvas ref={background} aria-hidden="true" />
       <canvas
         ref={canvas}
         role="img"
-        aria-label="A luminous four-arm spiral galaxy with twenty thousand stars"
+        aria-label="An interactive four-arm spiral galaxy with twenty thousand stars"
       />
+      <canvas ref={overlay} className="effects" aria-hidden="true" />
     </div>
   );
-}
+});

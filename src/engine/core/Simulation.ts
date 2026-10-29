@@ -1,3 +1,7 @@
+import { Shockwave } from "../forces/Shockwave";
+import { Supernova } from "../forces/Supernova";
+import { PointerForce } from "../forces/PointerForce";
+import type { PointerSource } from "../../input/tools";
 import { angularSpeed, IGNITION_SECONDS } from "./constants";
 import { ParticleBuffer } from "./ParticleBuffer";
 import { OrbitalForce } from "../forces/OrbitalForce";
@@ -5,8 +9,16 @@ import { Drag } from "../forces/Drag";
 export class Simulation {
   readonly orbit = new OrbitalForce();
   readonly drag = new Drag();
+  readonly waves = new Shockwave();
+  readonly supernova = new Supernova(this.waves);
+  readonly pointers: PointerForce;
   time = 0;
-  constructor(readonly buffer: ParticleBuffer) {}
+  constructor(
+    readonly buffer: ParticleBuffer,
+    sources: PointerSource[] = [],
+  ) {
+    this.pointers = new PointerForce(sources);
+  }
   step(dt: number) {
     const b = this.buffer;
     const previous = this.time;
@@ -21,6 +33,8 @@ export class Simulation {
       }
     }
     this.orbit.apply(b, dt, this);
+    this.pointers.apply(b, dt);
+    this.waves.apply(b, dt);
     for (let i = 0; i < b.count; i++) {
       b.px[i] = b.x[i] ?? 0;
       b.py[i] = b.y[i] ?? 0;
@@ -28,5 +42,30 @@ export class Simulation {
       b.y[i] = (b.y[i] ?? 0) + (b.vy[i] ?? 0) * dt;
     }
     this.drag.apply(b, dt);
+    for (let i = 0; i < b.count; i++) {
+      if ((b.flags[i] ?? 0) & 2) {
+        b.life[i] = (b.life[i] ?? 0) - dt;
+        b.hue[i] = 45 + (3 - (b.life[i] ?? 0)) * 80;
+        if ((b.life[i] ?? 0) <= 0) {
+          b.flags[i] = 0;
+          b.life[i] = Infinity;
+          b.hue[i] = 240;
+        }
+      }
+      const x = b.x[i] ?? 0,
+        y = b.y[i] ?? 0;
+      if (x * x + y * y > 1.44) {
+        b.vx[i] = ((b.vx[i] ?? 0) - x * 0.25 * dt) * Math.exp(-0.7 * dt);
+        b.vy[i] = ((b.vy[i] ?? 0) - y * 0.25 * dt) * Math.exp(-0.7 * dt);
+      }
+      if (x * x + y * y > 36) {
+        const angle = i * 2.3999632297;
+        b.x[i] = b.hx[i] ?? Math.cos(angle);
+        b.y[i] = b.hy[i] ?? Math.sin(angle);
+        const speed = angularSpeed(1);
+        b.vx[i] = -Math.sin(angle) * speed;
+        b.vy[i] = Math.cos(angle) * speed;
+      }
+    }
   }
 }

@@ -1,18 +1,36 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CanvasStage } from "./CanvasStage";
+import { ToolDock } from "./ToolDock";
+import type { Engine } from "../engine/Engine";
+import type { ToolId } from "../input/tools";
+import { keyboard } from "../input/keyboard";
 export function App() {
   const [stats, setStats] = useState(""),
-    [visible, setVisible] = useState(false);
+    [visible, setVisible] = useState(false),
+    [active, setActive] = useState<ToolId>("attract");
+  const engine = useRef<Engine | null>(null);
+  const onEngine = useCallback((value: Engine | null) => {
+    engine.current = value;
+  }, []);
+  const select = useCallback((tool: ToolId) => {
+    setActive(tool);
+    engine.current?.setTool(tool);
+  }, []);
+  useEffect(() => keyboard(() => engine.current, select), [select]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === "f") setVisible((v) => !v);
+      if (
+        e.key.toLowerCase() === "f" &&
+        !(e.target instanceof HTMLInputElement)
+      )
+        setVisible((v) => !v);
     };
     addEventListener("keydown", key);
     return () => removeEventListener("keydown", key);
   }, []);
   return (
     <>
-      <CanvasStage onStats={setStats} />
+      <CanvasStage onStats={setStats} onEngine={onEngine} />
       <header>
         <a className="brand" href="/">
           ✳{" "}
@@ -28,24 +46,23 @@ export function App() {
       <main>
         <div className="eyebrow">YOUR OWN LITTLE INFINITY</div>
         <h1>
-          Somewhere,
+          A universe.
           <br />
-          everything begins.
+          At your fingertips.
         </h1>
         <p>
-          Twenty thousand stars. One quiet moment.
+          Hold to gather the stars. Scroll to explore.
           <br />
-          Watch a universe come to life.
+          Choose a power. Make a little chaos.
         </p>
       </main>
       <footer>
         <span>
           <i /> VEILED ORCHID CLUSTER <small>NGC — 4217</small>
         </span>
-        <span>
-          CANVAS EXPLORATION <b>01 / FOUNDATION</b>
-        </span>
+        <span>HOLD · STIR · DISCOVER</span>
       </footer>
+      <ToolDock active={active} onSelect={select} />
       {visible && <output className="stats">{stats}</output>}
       <div className="coordinate">
         RA 23h 17m · DEC +61° 32′

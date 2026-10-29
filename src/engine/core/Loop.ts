@@ -17,6 +17,7 @@ export class Loop {
   private previous = 0;
   private accumulator = new Accumulator();
   private paused = false;
+  private hidden = false;
   fps = 60;
   frameMs = 16.67;
   constructor(
@@ -26,7 +27,7 @@ export class Loop {
   private frame = (now: number) => {
     const gap = this.previous ? (now - this.previous) / 1000 : 1 / 60;
     this.previous = now;
-    if (!this.paused) {
+    if (!this.paused && !this.hidden) {
       this.accumulator.advance(gap, this.step);
       this.render(now / 1000);
       this.frameMs = this.frameMs * 0.95 + gap * 1000 * 0.05;
@@ -35,12 +36,24 @@ export class Loop {
     this.id = requestAnimationFrame(this.frame);
   };
   private visibility = () => {
-    this.paused = document.hidden;
+    this.hidden = document.hidden;
     this.previous = 0;
   };
   start() {
     document.addEventListener("visibilitychange", this.visibility);
     this.id = requestAnimationFrame(this.frame);
+  }
+  togglePause() {
+    this.paused = !this.paused;
+  }
+  get isPaused() {
+    return this.paused;
+  }
+  stepFrame() {
+    if (this.paused) {
+      this.step(1 / 60);
+      this.render(performance.now() / 1000);
+    }
   }
   dispose() {
     cancelAnimationFrame(this.id);
