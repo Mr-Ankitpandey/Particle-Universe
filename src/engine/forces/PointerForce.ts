@@ -1,13 +1,15 @@
 import type { ParticleBuffer } from "../core/ParticleBuffer";
 import type { PointerSource } from "../../input/tools";
 import type { Force } from "./Force";
-const STRENGTH = 0.22,
+const DEFAULT_STRENGTH = 0.22,
   MOMENTUM = 0.06;
 export class PointerForce implements Force {
+  strength = DEFAULT_STRENGTH;
   readonly id = "pointer";
   enabled = true;
   constructor(readonly sources: PointerSource[]) {}
   apply(b: ParticleBuffer, dt: number) {
+    if (!this.enabled) return;
     const x = b.x,
       y = b.y,
       vx = b.vx,
@@ -22,14 +24,14 @@ export class PointerForce implements Force {
       )
         continue;
       for (let i = 0; i < b.count; i++) {
-        if ((b.flags[i] ?? 0) & 1) continue;
+        if ((b.flags[i] ?? 0) & 1 || (b.visibility[i] ?? 1) <= 0.001) continue;
         const dx = source.x - (x[i] ?? 0),
           dy = source.y - (y[i] ?? 0),
           d2 = dx * dx + dy * dy;
         if (d2 > source.radius * source.radius || d2 < 0.000001) continue;
         const d = Math.sqrt(d2),
           falloff = (1 - d / source.radius) ** 2,
-          force = (STRENGTH * falloff * dt) / d;
+          force = (this.strength * falloff * dt) / d;
         let ax = dx,
           ay = dy;
         if (source.tool === "repel") {

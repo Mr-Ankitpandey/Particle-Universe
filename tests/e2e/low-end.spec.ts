@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, staticPreview } from "./fixture";
 import { mkdirSync, writeFileSync } from "node:fs";
 
 test("full-resolution stars under low-end CPU load and HiDPI", async ({
@@ -8,6 +8,7 @@ test("full-resolution stars under low-end CPU load and HiDPI", async ({
     viewport: { width: 1280, height: 720 },
     deviceScaleFactor: 2,
   });
+  await staticPreview(context);
   const page = await context.newPage();
   await page.goto("http://localhost:4173");
   await page.waitForTimeout(3000);

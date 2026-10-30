@@ -1,69 +1,78 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useStore } from "zustand";
 import { CanvasStage } from "./CanvasStage";
 import { ToolDock } from "./ToolDock";
+import { TopBar, randomizeScene } from "./TopBar";
+import { SettingsPanel } from "./SettingsPanel";
+import { sceneStore, updateScene } from "../state/store";
 import type { Engine } from "../engine/Engine";
 import type { ToolId } from "../input/tools";
 import { keyboard } from "../input/keyboard";
 export function App() {
   const [stats, setStats] = useState(""),
     [visible, setVisible] = useState(false),
-    [active, setActive] = useState<ToolId>("attract");
-  const engine = useRef<Engine | null>(null);
-  const [toast, setToast] = useState(""),
-    [fields, setFields] = useState(false);
-  const [options, setOptions] = useState({
-    bloom: 0.12,
-    nebula: true,
-    flow: false,
-    turbulence: false,
-    streak: false,
-  });
-  useEffect(() => {
-    engine.current?.setFields(options);
-  }, [options]);
-  useEffect(() => {
-    if (!toast) return;
-    const timeout = setTimeout(() => setToast(""), 4000);
-    return () => clearTimeout(timeout);
-  }, [toast]);
+    [active, setActive] = useState<ToolId>("attract"),
+    [toast, setToast] = useState(""),
+    [settings, setSettings] = useState(false);
+  const name = useStore(sceneStore, (s) => s.config.name),
+    seed = useStore(sceneStore, (s) => s.config.seed);
+  const engine = useRef<Engine | null>(null),
+    activeRef = useRef<ToolId>("attract");
   const onEngine = useCallback((value: Engine | null) => {
     engine.current = value;
+    value?.setTool(activeRef.current);
   }, []);
   const select = useCallback((tool: ToolId) => {
+    activeRef.current = tool;
     setActive(tool);
     engine.current?.setTool(tool);
+    if (tool === "attract" || tool === "repel" || tool === "swirl")
+      updateScene((scene) => { scene.physics.pointerMode = tool; });
   }, []);
+  useEffect(() => sceneStore.subscribe((state, previous) => {
+    const mode = state.config.physics.pointerMode;
+    if (mode !== "off" && mode !== previous.config.physics.pointerMode) {
+      activeRef.current = mode;
+      setActive(mode);
+      engine.current?.setTool(mode);
+    }
+  }), []);
   useEffect(() => keyboard(() => engine.current, select), [select]);
   useEffect(() => {
-    const key = (e: KeyboardEvent) => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(""), 4000);
+    return () => clearTimeout(timer);
+  }, [toast]);
+  useEffect(() => {
+    const listener = (e: KeyboardEvent) => {
       if (
-        e.key.toLowerCase() === "f" &&
-        !(e.target instanceof HTMLInputElement)
+        e.target instanceof HTMLElement &&
+        (e.target.isContentEditable ||
+          /INPUT|TEXTAREA|SELECT/.test(e.target.tagName))
       )
-        setVisible((v) => !v);
+        return;
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        if (e.shiftKey) sceneStore.getState().redo();
+        else sceneStore.getState().undo();
+        return;
+      }
+      if (e.ctrlKey || e.metaKey) return;
+      if (e.key.toLowerCase() === "f") setVisible((v) => !v);
+      if (e.key.toLowerCase() === "r") randomizeScene(e.shiftKey);
+      if (e.key === "Escape") setSettings(false);
     };
-    addEventListener("keydown", key);
-    return () => removeEventListener("keydown", key);
+    addEventListener("keydown", listener);
+    return () => removeEventListener("keydown", listener);
   }, []);
   return (
     <>
       <CanvasStage onStats={setStats} onEngine={onEngine} onToast={setToast} />
-      <header>
-        <a className="brand" href="/">
-          ✳{" "}
-          <span>
-            PARTICLE <b>UNIVERSE</b>
-          </span>
-        </a>
-        <span className="edition">AN INTERACTIVE COSMIC PLAYGROUND</span>
-        <button onClick={() => setFields((v) => !v)} aria-expanded={fields}>
-          Fields
-        </button>
-        <button onClick={() => setVisible((v) => !v)} aria-pressed={visible}>
-          Live observatory <i />
-        </button>
-      </header>
-      <main>
+      <TopBar
+        onSettings={() => setSettings((value) => !value)}
+        onStats={() => setVisible((value) => !value)}
+      />
+      <main className="intro">
         <div className="eyebrow">YOUR OWN LITTLE INFINITY</div>
         <h1>
           A universe.
@@ -78,65 +87,25 @@ export function App() {
       </main>
       <footer>
         <span>
-          <i /> VEILED ORCHID CLUSTER <small>NGC — 4217</small>
+          <i />
+          {name}
+          <small>SEED {seed}</small>
         </span>
         <span>HOLD · STIR · DISCOVER</span>
       </footer>
-      {fields && (
-        <aside className="field-panel">
-          <h2>Cosmic fields</h2>
-          <p>
-            Place objects with tools 6–8. Drag to move, scroll to resize,
-            right-click or hold to remove.
-          </p>
-          <label>
-            Bloom{" "}
-            <input
-              aria-label="Bloom"
-              type="range"
-              min="0"
-              max=".35"
-              step=".01"
-              value={options.bloom}
-              onChange={(e) =>
-                setOptions({ ...options, bloom: Number(e.target.value) })
-              }
-            />
-          </label>
-          {(["nebula", "flow", "turbulence", "streak"] as const).map((key) => (
-            <label key={key}>
-              <input
-                type="checkbox"
-                checked={options[key]}
-                onChange={(e) =>
-                  setOptions({ ...options, [key]: e.target.checked })
-                }
-              />
-              {key === "flow"
-                ? "Curl-noise flow"
-                : key === "streak"
-                  ? "Streak trails"
-                  : key}
-            </label>
-          ))}
-          <p>
-            Freeze: brush to hold stars, Shift to unfreeze. Space thaws all
-            frozen stars.
-          </p>
-        </aside>
-      )}
+      <ToolDock active={active} onSelect={select} />
+      <SettingsPanel
+        open={settings}
+        onOpenChange={setSettings}
+        onPause={() => engine.current?.togglePause()}
+        onStep={() => engine.current?.step()}
+      />
+      {visible && <output className="stats">{stats}</output>}
       {toast && (
         <div role="status" className="toast">
           {toast}
         </div>
       )}
-      <ToolDock active={active} onSelect={select} />
-      {visible && <output className="stats">{stats}</output>}
-      <div className="coordinate">
-        RA 23h 17m · DEC +61° 32′
-        <br />
-        SEED 004217
-      </div>
     </>
   );
 }

@@ -10,7 +10,7 @@ export class Vortex implements Force {
       const entity = this.entities.items[e];
       if (!entity || entity.kind !== "vortex") continue;
       for (let i = 0; i < b.count; i++) {
-        if ((b.flags[i] ?? 0) & 1) continue;
+        if ((b.flags[i] ?? 0) & 1 || (b.visibility[i] ?? 1) <= 0.001) continue;
         const dx = (b.x[i] ?? 0) - entity.x,
           dy = (b.y[i] ?? 0) - entity.y,
           d = Math.hypot(dx, dy);

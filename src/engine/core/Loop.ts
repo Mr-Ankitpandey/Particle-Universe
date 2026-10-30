@@ -20,6 +20,7 @@ export class Loop {
   private hidden = false;
   fps = 60;
   frameMs = 16.67;
+  simulationMs = 0;
   constructor(
     private step: (dt: number) => void,
     private render: (time: number) => void,
@@ -28,7 +29,9 @@ export class Loop {
     const gap = this.previous ? (now - this.previous) / 1000 : 1 / 60;
     this.previous = now;
     if (!this.paused && !this.hidden) {
+      const start = performance.now();
       this.accumulator.advance(gap, this.step);
+      this.simulationMs = performance.now() - start;
       this.render(now / 1000);
       this.frameMs = this.frameMs * 0.95 + gap * 1000 * 0.05;
       this.fps = 1000 / this.frameMs;

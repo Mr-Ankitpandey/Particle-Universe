@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixture";
 import { mkdirSync, writeFileSync } from "node:fs";
 test("ignition, stats, resize and runtime health", async ({ page }) => {
   const errors: string[] = [];

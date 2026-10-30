@@ -3,9 +3,10 @@ export function starfield(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
+  density = 1,
 ) {
   const rng = new Rng(714);
-  for (let i = 0; i < 650; i++) {
+  for (let i = 0; i < 650 * density; i++) {
     ctx.fillStyle = "rgba(190,200,255," + (0.12 + rng.next() * 0.5) + ")";
     ctx.fillRect(
       rng.next() * width,

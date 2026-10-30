@@ -14,7 +14,7 @@ export class GravityWell implements Force {
       const entity = this.entities.items[e];
       if (!entity || entity.kind !== "gravityWell") continue;
       for (let i = 0; i < b.count; i++) {
-        if ((b.flags[i] ?? 0) & 1) continue;
+        if ((b.flags[i] ?? 0) & 1 || (b.visibility[i] ?? 1) <= 0.001) continue;
         const dx = entity.x - (x[i] ?? 0),
           dy = entity.y - (y[i] ?? 0),
           d2 = dx * dx + dy * dy;

@@ -1,3 +1,4 @@
+import type { SceneEntity } from "../../scene/schema";
 export type EntityKind = "gravityWell" | "blackHole" | "vortex";
 export interface Entity {
   id: number;
@@ -32,6 +33,41 @@ export class EntityManager {
       clockwise: true,
     });
     return id;
+  }
+  apply(items: SceneEntity[]) {
+    this.items.length = 0;
+    for (const item of items) {
+      const id = this.add(item.kind, item.x, item.y);
+      const target = this.find(id);
+      if (target) Object.assign(target, item);
+    }
+  }
+  export(): SceneEntity[] {
+    return this.items.map((item) =>
+      item.kind === "blackHole"
+        ? {
+            kind: item.kind,
+            x: Math.max(-1, Math.min(1, item.x)),
+            y: Math.max(-1, Math.min(1, item.y)),
+            mass: item.mass,
+          }
+        : item.kind === "vortex"
+          ? {
+              kind: item.kind,
+              x: Math.max(-1, Math.min(1, item.x)),
+              y: Math.max(-1, Math.min(1, item.y)),
+              strength: item.strength,
+              radius: item.radius,
+              clockwise: item.clockwise,
+            }
+          : {
+              kind: item.kind,
+              x: Math.max(-1, Math.min(1, item.x)),
+              y: Math.max(-1, Math.min(1, item.y)),
+              strength: item.strength,
+              radius: item.radius,
+            },
+    );
   }
   hit(x: number, y: number, tolerance = 0.09) {
     for (let i = this.items.length - 1; i >= 0; i--) {

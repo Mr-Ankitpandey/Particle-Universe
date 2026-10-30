@@ -1,5 +1,10 @@
 import { Rng } from "../../core/Rng";
 export class NebulaLayer {
+  intensity = 0.2;
+  interval = 4;
+  invalidate() {
+    this.frame = 0;
+  }
   private ctx: OffscreenCanvasRenderingContext2D;
   readonly canvas = new OffscreenCanvas(1, 1);
   private frame = 0;
@@ -17,7 +22,7 @@ export class NebulaLayer {
     this.frame = 0;
   }
   render(target: CanvasRenderingContext2D, w: number, h: number, time: number) {
-    if (this.frame++ % 8 !== 0) return;
+    if (this.frame++ % this.interval !== 0) return;
     {
       const c = this.ctx,
         width = this.canvas.width,
@@ -42,6 +47,8 @@ export class NebulaLayer {
     }
     target.clearRect(0, 0, w, h);
     target.globalCompositeOperation = "lighter";
+    target.globalAlpha = Math.min(1, this.intensity * 4);
     target.drawImage(this.canvas, 0, 0, w, h);
+    target.globalAlpha = 1;
   }
 }

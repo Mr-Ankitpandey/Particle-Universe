@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect, useLayoutEffect, useRef } from "react";
 import { Engine } from "../engine/Engine";
 export const CanvasStage = memo(function CanvasStage({
   onStats,
@@ -14,6 +14,12 @@ export const CanvasStage = memo(function CanvasStage({
     overlay = useRef<HTMLCanvasElement>(null),
     nebula = useRef<HTMLCanvasElement>(null),
     bloom = useRef<HTMLCanvasElement>(null);
+  useLayoutEffect(() => {
+    if (canvas.current)
+      canvas.current.dataset.renderCount = String(
+        Number(canvas.current.dataset.renderCount ?? 0) + 1,
+      );
+  });
   useEffect(() => {
     if (
       !canvas.current ||
@@ -50,7 +56,12 @@ export const CanvasStage = memo(function CanvasStage({
         s.fps.toFixed(0) +
           " FPS · " +
           s.frameMs.toFixed(1) +
-          " MS · 20,000 PARTICLES · HIGH" +
+          " MS · " +
+          s.particleCount.toLocaleString("en-US") +
+          " / " +
+          s.configuredCount.toLocaleString("en-US") +
+          " PARTICLES · " +
+          s.qualityTier.toUpperCase() +
           (s.paused ? " · PAUSED" : ""),
       );
     }, 500);

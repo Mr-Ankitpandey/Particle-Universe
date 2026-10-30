@@ -18,7 +18,7 @@ export class BlackHole implements Force {
       entity.mass = Math.max(0.4, entity.mass - dt * 0.002);
       const horizon = 0.035 * Math.sqrt(entity.mass);
       for (let i = 0; i < b.count; i++) {
-        if ((b.flags[i] ?? 0) & 1) continue;
+        if ((b.flags[i] ?? 0) & 1 || (b.visibility[i] ?? 1) <= 0.001) continue;
         const dx = entity.x - (x[i] ?? 0),
           dy = entity.y - (y[i] ?? 0),
           d = Math.hypot(dx, dy);

@@ -1,3 +1,4 @@
+import { MorphSpring } from "../forces/MorphSpring";
 import type { EntityManager } from "../entities/EntityManager";
 import { GravityWell } from "../forces/GravityWell";
 import { BlackHole } from "../forces/BlackHole";
@@ -14,6 +15,7 @@ import { ParticleBuffer } from "./ParticleBuffer";
 import { OrbitalForce } from "../forces/OrbitalForce";
 import { Drag } from "../forces/Drag";
 export class Simulation {
+  readonly morph = new MorphSpring();
   readonly orbit = new OrbitalForce();
   readonly drag = new Drag();
   readonly waves = new Shockwave();
@@ -47,13 +49,17 @@ export class Simulation {
       for (let i = 0; i < b.count; i++) {
         const x = b.x[i] ?? 0,
           y = b.y[i] ?? 0,
-          speed = angularSpeed(x * x + y * y);
+          speed =
+            angularSpeed(x * x + y * y) *
+            Math.sqrt(this.orbit.gravity) *
+            this.orbit.rotationSpeed;
         b.vx[i] = -y * speed;
         b.vy[i] = x * speed;
       }
     }
     this.freeze.apply(b);
-    this.orbit.apply(b, dt, this);
+    if (this.morph.remaining <= 0 && !this.morph.hold)
+      this.orbit.apply(b, dt, this);
     this.wells?.apply(b, dt);
     this.holes?.apply(b, dt);
     this.vortices?.apply(b, dt);
@@ -61,8 +67,25 @@ export class Simulation {
     this.turbulence.apply(b, dt, this);
     this.pointers.apply(b, dt);
     this.waves.apply(b, dt);
+    const wasMorphing = this.morph.remaining > 0;
+    this.morph.apply(b, dt);
+    if (wasMorphing && this.morph.remaining === 0 && !this.morph.hold) {
+      // Restore circular momentum after gathering; a spring otherwise leaves
+      // stars nearly stationary and the next gravity step collapses the scene.
+      for (let i = 0; i < b.count; i++) {
+        if ((b.flags[i] ?? 0) & 1) continue;
+        const x = b.x[i] ?? 0,
+          y = b.y[i] ?? 0;
+        const speed =
+          angularSpeed(x * x + y * y) *
+          Math.sqrt(this.orbit.gravity) *
+          this.orbit.rotationSpeed;
+        b.vx[i] = -y * speed;
+        b.vy[i] = x * speed;
+      }
+    }
     for (let i = 0; i < b.count; i++) {
-      if ((b.flags[i] ?? 0) & 1) continue;
+      if ((b.flags[i] ?? 0) & 1 || (b.visibility[i] ?? 1) <= 0.001) continue;
       b.px[i] = b.x[i] ?? 0;
       b.py[i] = b.y[i] ?? 0;
       b.x[i] = (b.x[i] ?? 0) + (b.vx[i] ?? 0) * dt;

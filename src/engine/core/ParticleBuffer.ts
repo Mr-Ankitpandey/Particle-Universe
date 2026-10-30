@@ -16,6 +16,7 @@ export class ParticleBuffer {
   life: Float32Array;
   mass: Float32Array;
   flags: Uint8Array;
+  visibility: Float32Array;
   constructor(capacity: number) {
     this.capacity = capacity;
     this.count = capacity;
@@ -28,11 +29,12 @@ export class ParticleBuffer {
     this.hx = new Float32Array(capacity);
     this.hy = new Float32Array(capacity);
     this.hue = new Float32Array(capacity);
-    this.sat = new Float32Array(capacity);
-    this.lum = new Float32Array(capacity);
+    this.sat = new Float32Array(capacity).fill(0.75);
+    this.lum = new Float32Array(capacity).fill(0.78);
     this.size = new Float32Array(capacity);
     this.life = new Float32Array(capacity).fill(Infinity);
     this.mass = new Float32Array(capacity).fill(1);
     this.flags = new Uint8Array(capacity);
+    this.visibility = new Float32Array(capacity).fill(1);
   }
 }

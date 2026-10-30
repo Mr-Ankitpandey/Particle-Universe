@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixture";
 import { mkdirSync } from "node:fs";
 test("every power, charging, pause, camera and two simultaneous touches", async ({
   page,

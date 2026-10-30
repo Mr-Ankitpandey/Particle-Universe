@@ -42,7 +42,7 @@ export class FlowField implements Force {
         }
     }
     for (let i = 0; i < b.count; i++) {
-      if ((b.flags[i] ?? 0) & 1) continue;
+      if ((b.flags[i] ?? 0) & 1 || (b.visibility[i] ?? 1) <= 0.001) continue;
       const gx = ((b.x[i] ?? 0) / EXTENT + 1) * 0.5 * (GRID - 1),
         gy = ((b.y[i] ?? 0) / EXTENT + 1) * 0.5 * (GRID - 1);
       const col = Math.max(0, Math.min(GRID - 2, Math.floor(gx))),

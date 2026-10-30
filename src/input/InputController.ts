@@ -5,6 +5,7 @@ import type {
 import { Camera } from "../engine/core/Camera";
 import type { PointerSource, ToolId } from "./tools";
 export interface InteractionActions {
+  commitEntities(): void;
   shouldThaw(x: number, y: number, radius: number): boolean;
   shockwave(x: number, y: number): void;
   supernova(x: number, y: number, charge: number): void;
@@ -52,7 +53,10 @@ export class InputController {
     event.preventDefault();
     this.camera.screenToWorld(event.clientX, event.clientY, this.scratch);
     const hit = this.entities.hit(this.scratch.x, this.scratch.y);
-    if (hit) this.entities.remove(hit.id);
+    if (hit) {
+      this.entities.remove(hit.id);
+      this.actions.commitEntities();
+    }
   };
   private down = (event: PointerEvent) => {
     if (event.button !== 0 && event.button !== 1) return;
@@ -86,6 +90,7 @@ export class InputController {
       source.tool = "pan";
       source.longPress = window.setTimeout(() => {
         this.entities.remove(hit.id);
+        this.actions.commitEntities();
         source.active = false;
       }, 650);
     } else if (
@@ -184,6 +189,7 @@ export class InputController {
       );
     clearTimeout(source.longPress);
     source.active = false;
+    if (source.entityId >= 0) this.actions.commitEntities();
     this.updatePinch(false);
   };
   private cancel = (event: PointerEvent) => {
@@ -200,6 +206,7 @@ export class InputController {
     const hit = this.entities.hit(this.scratch.x, this.scratch.y);
     if (hit) {
       this.entities.resize(hit.id, Math.exp(-event.deltaY * 0.001));
+      this.actions.commitEntities();
       return;
     }
     this.camera.zoomAt(

@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixture";
 import { mkdirSync } from "node:fs";
 test("objects, black-hole rendering, limits, bloom and flow", async ({
   page,
@@ -29,9 +29,11 @@ test("objects, black-hole rendering, limits, bloom and flow", async ({
   await page.screenshot({ path: "screenshots/phase-3/entity-limit.png" });
   await page.goto("http://localhost:4173");
   await page.waitForTimeout(2700);
-  await page.getByRole("button", { name: "Fields", exact: true }).click();
+  await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "Physics", exact: true }).click();
   await page.getByLabel("Curl-noise flow").check();
-  await page.getByLabel("Streak trails").check();
+  await page.getByRole("tab", { name: "Appearance", exact: true }).click();
+  await page.getByLabel("Trail style").selectOption("streak");
   await page.waitForTimeout(3000);
   await page.screenshot({ path: "screenshots/phase-3/flow.png" });
   await page.getByLabel("Bloom", { exact: true }).focus();

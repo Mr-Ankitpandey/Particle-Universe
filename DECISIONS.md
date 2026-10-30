@@ -16,3 +16,7 @@
 
 - Cache a seeded curl-noise vector grid and interpolate it per particle; this avoids four simplex evaluations per particle per step.
 - Render nebula and quarter-resolution bloom on separate canvas layers to prevent trail feedback, preserve dark space, and avoid repeated full-resolution glow uploads.
+
+- Governor recovery uses measured simulation-plus-render work below 13ms while frame intervals remain below 19ms; a 60Hz display cannot produce sustained sub-13ms rAF intervals even when the CPU has ample headroom.
+- Optional STATIC_PREVIEW browser-test transport serves production files through Playwright routing because loopback TCP timed out even outside the sandbox. Normal preview-server coverage remains separate.
+- Audio mapping values are part of the scene contract now; audio input/playback remains Phase 7. Image creation and image color data remain Phase 5.

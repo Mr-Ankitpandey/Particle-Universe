@@ -1,9 +1,9 @@
 # Progress
 
 - [ ] Phase 1 — implemented foundation checkpoint; performance and remaining verification gates open.
-- [ ] Phase 2 — not started (depends on Phase 1).
-- [ ] Phase 3
-- [ ] Phase 4
+- [x] Phase 2 — interaction implementation verified; inherited release gates remain open.
+- [x] Phase 3 — cosmic objects and fields verified; performance caveats below.
+- [ ] Phase 4 — functional checkpoint verified; strict timing/visual acceptance limitations below remain open.
 - [ ] Phase 5
 - [ ] Phase 6
 - [ ] Phase 7
@@ -88,3 +88,17 @@ Implemented gravity wells, absorbing/respawning black holes with capped growth a
 - Reviewed black-hole, flow, bloom on/off, and mobile screenshots in `screenshots/phase-3/`.
 - Latest host-loaded performance sample: 39.23 ms at 20k; DPR 2 with 4× CPU throttling: 75.08 ms. Earlier same-stage sample before the final run was ~20.25 ms. These are diagnostics, not a claim that the final performance budget passes. Host build/unit-test timings also slowed substantially in the last run. Phase 4 includes the specified governor; performance remains a release gate.
 - Runtime allocation / exact Chrome browser caveats from Phase 1 remain open.
+
+## Phase 4 — resumed scene/settings checkpoint — 2026-10-31
+
+Resumed the existing uncommitted implementation. Added validated versioned scenes, v0 migration, six presets, curated randomization, procedural names, live settings, bounded config history, and adaptive quality. Fixed the undefined orbital drag constant, preserved tangential momentum after morph transitions, avoided regenerating stars on unrelated settings changes, and connected quality tiers to nebula cadence/DPR/bloom. Fully faded stars skip the major force/integration passes. Quality recovery measures simulation plus rendering work, not just rendering.
+
+Verification:
+- Typecheck, lint, unit tests and production build passed. The added scene-transition regression also passed; 18 unit tests now exist.
+- Full six-test browser suite passed in installed Edge. Includes prior tools/entities/mobile/HiDPI coverage and presets/settings/history/twenty randomizations. A separate all-numeric-settings test passed and verified an unchanged canvas render counter.
+- Dedicated 4× CPU throttle test passed: active count reduced to 5,450 of 20,000, with the stats sample at 58 FPS / 17.4 ms. After removing throttling, count increased to 7,543; a later sample showed 6,412 at 48 FPS, illustrating host-load variation rather than full recovery to 20,000. Evidence: `screenshots/phase-4/governor.json`.
+- Six-preset grid, twenty-randomization contact sheet, desktop settings and mobile sheet captured in `screenshots/phase-4/` and visually reviewed. Presets are clearly distinct. Some random scenes remain compact/dim and need art-direction refinement before claiming all twenty meet the requested visual bar.
+- Initial JS: approximately 126.1 KB gzip (budget 220 KB).
+- Browser tests use optional STATIC_PREVIEW request interception for built files. Local TCP connections timed out even outside the sandbox; the regular Vite HTTP preview path was not verified in this run.
+
+Open gates: exact per-slider next-frame visual latency has not been instrumented (the render counter verifies React isolation, not timing); uniform fade is implemented but no frame-by-frame no-pop visual assertion exists. Audio mappings are stored but live audio remains Phase 7; image colors require Phase 5 image data. Earlier full-count performance, zero-runtime-allocation and cross-browser release gates remain open. Phase 5 is not claimed started. This is a reviewable checkpoint, not full-project or strict Phase 4 completion.

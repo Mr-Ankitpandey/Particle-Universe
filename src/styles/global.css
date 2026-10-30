@@ -347,3 +347,345 @@ header button {
   pointer-events: none;
   mix-blend-mode: plus-lighter;
 }
+.topbar {
+  height: 68px;
+  margin: 12px 24px 0;
+  padding: 0 14px;
+  gap: 16px;
+  justify-content: flex-start;
+  background: rgba(14, 12, 30, 0.55);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid #ffffff14;
+  border-radius: 15px;
+  z-index: 5;
+}
+.universe-name {
+  min-width: 120px;
+  width: 200px;
+  font:
+    15px "Space Grotesk",
+    sans-serif;
+  color: #e8e6ff;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 8px;
+}
+.universe-name:focus {
+  border-color: #a78bfa;
+}
+.topbar select,
+.select-setting select {
+  color: #e8e6ff;
+  background: #151127;
+  border: 1px solid #ffffff20;
+  border-radius: 8px;
+  padding: 9px;
+  font: 11px inherit;
+  min-height: 40px;
+  max-width: 160px;
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+}
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  color: #c6bddc;
+  background: transparent;
+  border: 1px solid transparent;
+}
+.icon-button:hover {
+  background: #a78bfa18;
+  border-color: #a78bfa30;
+}
+.icon-button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.settings-panel {
+  position: fixed;
+  z-index: 15;
+  right: 24px;
+  top: 94px;
+  width: 340px;
+  max-height: calc(100dvh - 210px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  background: rgba(14, 12, 30, 0.94);
+  backdrop-filter: blur(18px);
+  border: 1px solid #ffffff18;
+  border-radius: 18px;
+  box-shadow: 0 20px 100px #0006;
+  animation: drawer-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.panel-heading h2 {
+  font:
+    20px "Space Grotesk",
+    sans-serif;
+  margin: 0;
+}
+.panel-description {
+  font-size: 11px;
+  margin: 7px 0 15px;
+  line-height: 1.7;
+}
+.settings-panel > [data-orientation] {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+.settings-tabs {
+  display: flex;
+  gap: 3px;
+  border-bottom: 1px solid #ffffff15;
+  padding-bottom: 12px;
+  flex-shrink: 0;
+}
+.settings-tabs button {
+  font: 10px inherit;
+  padding: 8px 7px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+}
+.settings-tabs button[data-state="active"] {
+  background: #a78bfa24;
+  color: #e3d4ff;
+}
+.settings-content {
+  overflow-y: auto;
+  padding: 16px 4px 6px;
+  outline: none;
+  scrollbar-width: thin;
+  scrollbar-color: #756396 #17112b;
+}
+.setting-slider {
+  margin: 0 0 21px;
+}
+.setting-heading {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-bottom: 13px;
+}
+.setting-heading output {
+  color: #bda3f3;
+  font: 11px monospace;
+}
+.setting-slider > [data-orientation="horizontal"] {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 20px;
+  touch-action: none;
+}
+.slider-track {
+  height: 3px;
+  background: #ffffff18;
+  position: relative;
+  flex-grow: 1;
+  border-radius: 10px;
+}
+.slider-range {
+  position: absolute;
+  height: 100%;
+  background: #a78bfa;
+  border-radius: 10px;
+}
+.slider-thumb {
+  display: block;
+  width: 13px;
+  height: 13px;
+  border: 2px solid #e9dcff;
+  border-radius: 50%;
+  background: #a78bfa;
+  box-shadow: 0 0 12px #a78bfa33;
+}
+.slider-thumb:focus-visible {
+  outline: 2px solid #a78bfa;
+  outline-offset: 4px;
+}
+.check-setting,
+.select-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+  min-height: 44px;
+  margin-bottom: 12px;
+}
+.check-setting {
+  justify-content: flex-start;
+}
+.check-setting input {
+  accent-color: #a78bfa;
+  width: 16px;
+  height: 16px;
+}
+.palette-picker {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.palette-picker label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 10px;
+  gap: 8px;
+  text-transform: capitalize;
+}
+.palette-picker input {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #ffffff20;
+  border-radius: 6px;
+  background: none;
+  padding: 2px;
+}
+.button-row {
+  display: flex;
+  gap: 8px;
+}
+.button-row button {
+  font-size: 11px;
+}
+.intro {
+  animation: intro-away 10s forwards;
+  pointer-events: none;
+}
+.stats {
+  z-index: 6;
+  top: 92px;
+  left: 24px;
+  right: auto;
+  max-width: calc(100% - 48px);
+}
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes intro-away {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+:focus-visible {
+  outline: 2px solid #bca2ff;
+  outline-offset: 3px;
+}
+button,
+input,
+select {
+  font-family: inherit;
+}
+@media (max-width: 900px) {
+  .topbar .brand span {
+    display: none;
+  }
+  .topbar {
+    gap: 8px;
+  }
+  .universe-name {
+    width: 170px;
+  }
+}
+@media (max-width: 600px) {
+  .topbar {
+    margin: 8px 8px 0;
+    padding: 7px 10px;
+    height: auto;
+    min-height: 64px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .topbar .brand {
+    font-size: 24px;
+  }
+  .universe-name {
+    width: calc(100% - 35px);
+    font-size: 14px;
+  }
+  .topbar select {
+    width: 130px;
+    max-width: 130px;
+    font-size: 10px;
+  }
+  .topbar-actions {
+    gap: 0;
+  }
+  .icon-button {
+    width: 38px;
+    height: 44px;
+    padding: 10px;
+  }
+  .settings-panel {
+    left: 8px;
+    right: 8px;
+    top: auto;
+    bottom: 190px;
+    width: auto;
+    max-height: calc(100dvh - 310px);
+    padding: 16px;
+  }
+  .settings-tabs button {
+    min-height: 44px;
+    padding: 8px 10px;
+  }
+  .settings-tabs {
+    overflow-x: auto;
+  }
+  .stats {
+    top: 120px;
+    left: 10px;
+    max-width: calc(100% - 20px);
+    font-size: 8px;
+  }
+  .intro {
+    top: 19%;
+  }
+  .setting-slider > [data-orientation="horizontal"] {
+    height: 32px;
+  }
+  .slider-thumb {
+    width: 18px;
+    height: 18px;
+  }
+  footer {
+    font-size: 8px;
+  }
+  footer small {
+    display: none;
+  }
+}

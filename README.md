@@ -2,7 +2,7 @@
 
 An in-progress Canvas 2D cosmic playground, built from [the supplied specification](docs/BUILD_SPEC.md).
 
-**Status: Phase 1 checkpoint, not a finished application.** The first galaxy, ignition animation, deterministic simulation, responsive rendering and live statistics are implemented. The performance gate has not passed; Phases 2–8 have not started.
+**Status: Phase 4 implementation checkpoint, not a finished application.** Includes pointer powers, multi-touch, cosmic objects, curl fields, six presets, validated scenes, live settings, randomization, undo/redo and adaptive quality. Creation, persistence/sharing, audio and release polish remain in Phases 5–8. See the progress log for verification limits.
 
 ![Foundation preview](screenshots/phase-1/desktop.png)
 
@@ -26,13 +26,15 @@ npm run e2e
 
 The committed pnpm lockfile supports `pnpm install --frozen-lockfile`. This development environment supplies pnpm rather than npm. Both invoke the same package scripts. The browser test starts the production preview automatically; run the build first.
 
-Press **F** or click **Live observatory** for FPS, frame time and particle count. Other interaction tools belong to subsequent phases and are not implemented yet.
+Press **F** or click **Live observatory** for FPS, frame time, active/configured particle counts and quality. Use **1–0** for tools, **Space** to pause/thaw, **.** to step, **R** to randomize, **Shift+R** for colors, and **Ctrl/Cmd+Z** / **Shift+Ctrl/Cmd+Z** for undo/redo. Scroll to zoom; drag cosmic objects, scroll over them to resize, and right-click or long-press to remove them. Settings sliders apply live; double-click restores the preset value.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
  React[React UI] --> Stage[CanvasStage lifecycle]
+ React --> Store[Validated scene / Zustand / history]
+ Store --> Engine
  Stage --> Engine
  Engine --> Loop[Fixed timestep loop]
  Loop --> Simulation
@@ -54,6 +56,8 @@ $env:PLAYWRIGHT_CHANNEL = 'msedge'
 npm run e2e
 node scripts/profile.mjs
 ```
+
+If this host blocks loopback connections, `$env:STATIC_PREVIEW = '1'` enables a Playwright fixture that serves the built `dist` files through browser request interception. It validates the production app in the browser but does not verify Vite's HTTP server. Leave this variable unset for normal preview-server testing.
 
 Profiling writes CPU and sampled allocation evidence into `screenshots/phase-1`. Sampling is diagnostic evidence, not proof of zero allocations.
 
